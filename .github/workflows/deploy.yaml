@@ -1,0 +1,42 @@
+name: Deploy action for GCP project
+
+on:
+  pull_request:
+    branches:
+      - master
+
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy_infra:
+    name: Deploy
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 1
+      matrix:
+        environment: ["develop", "qa", "prod"] # must match environment folder names in repo!
+    environment: ${{ matrix.environment }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch_depth: 0 # Fetch full git history -> needed for check_changes step
+
+      - name: Check changes to environment folder or root folder
+        id: check_changes
+        run: |
+          if [ ${{ github.event_name }} = "pull_request" ]
+          then
+            echo "::set-output name=changes::$(git --no-pager diff --name-only b4d820de4af2e3c7cd704384d0d1f6ec64d9d57b -- | cut -d'/' -f1 | grep -E '.hcl|${{ matrix.environment }}' | uniq | wc -l)"
+          elif [ ${{ github.event_name }} = "push" ]
+          then
+            echo "::set-output name=changes::$(git --no-pager log -m -1 --name-only --oneline | tail -n +2 | cut -d'/' -f1 | grep -E '.hcl|${{ matrix.environment }}' | uniq | wc -l)"
+          fi
+
+      - name: test
+        if: steps.check_changes.outputs.changes > 0
+        run: |
+          echo "Run ${{ github.event_name }} ${{ matrix.environment }}"
+
