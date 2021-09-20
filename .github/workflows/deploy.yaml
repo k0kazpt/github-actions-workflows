@@ -3,10 +3,12 @@ name: Deploy action for GCP project
 on:
   pull_request:
     branches:
+      - main
       - master
 
   push:
     branches:
+      - main
       - master
 
 jobs:
@@ -39,4 +41,3 @@ jobs:
         if: steps.check_changes.outputs.changes > 0
         run: |
           echo "Run ${{ github.event_name }} ${{ matrix.environment }}"
-
