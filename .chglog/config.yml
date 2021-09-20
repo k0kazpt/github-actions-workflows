@@ -1,0 +1,31 @@
+style: github
+template: CHANGELOG.tpl.md
+info:
+  title: CHANGELOG
+  repository_url: https://github.com/nosportugal/mpro-terragrunt-gcp-live
+options:
+  commits:
+    filters:
+      Type:
+        - feature
+        - hotfix
+        - bugfix
+  commit_groups:
+    group_by: Type
+    title_order:
+      - hotfix
+      - bugfix
+      - feature
+    title_maps:
+      feature: Improvements
+      hotfix: Bug fixes
+      bugfix: Bug fixes
+  header:
+    pattern: "^(feature|hotfix|bugfix|release)/(.*):(.*)$"
+    pattern_maps:
+      - Type
+      - Scope
+      - Subject
+  notes:
+    keywords:
+      - BREAKING CHANGE
