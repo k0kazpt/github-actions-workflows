@@ -5,11 +5,19 @@ on:
     branches:
       - main
       - master
+    paths-ignore:
+      - '.github/**'
+      - 'LICENSE'
+      - '**.md'
 
   push:
     branches:
       - main
       - master
+    paths-ignore:
+      - '.github/**'
+      - 'LICENSE'
+      - '**.md'
 
 jobs:
   deploy_infra:
@@ -41,3 +49,60 @@ jobs:
         if: steps.check_changes.outputs.changes > 0
         run: |
           echo "Run ${{ github.event_name }} ${{ matrix.environment }}"
+
+  after_deploy:
+    name: After Deploy
+    runs-on: ubuntu-latest
+    needs: deploy_infra
+    if: github.event_name == 'push'
+    steps:
+      #############
+      ### SETUP ###
+      #############
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.10
+        with:
+          versionSpec: '5.6.5'
+
+      - name: Install git-chglog
+        uses: craicoverflow/install-git-chglog@v1
+
+      ###########
+      ### RUN ###
+      ###########
+      - name: Get Version
+        id:   gitversion
+        uses: gittools/actions/gitversion/execute@v0.9.10
+
+      - name: Create changelog file
+        run: |
+          git-chglog -o CHANGELOG.md --next-tag ${{ steps.gitversion.outputs.SemVer }}
+
+      - name: Push changed files to branch
+        uses: nosportugal/ghaction-publish-changes@1.0.0
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          BRANCH_NAME: ${{ steps.gitversion.outputs.branchName }}
+
+      - name: Get last sha after the push in the above step
+        id: get_last_sha
+        run: |
+          git fetch
+          echo "::set-output name=lastsha::$(git rev-parse HEAD)"
+
+      - name: Create tag
+        id: create_tag
+        uses: actions/github-script@v4
+        with:
+          script: |
+            github.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: "refs/tags/${{ steps.gitversion.outputs.SemVer }}",
+              sha: "${{ steps.get_last_sha.outputs.lastsha }}"
+            })
