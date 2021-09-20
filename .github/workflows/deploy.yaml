@@ -24,7 +24,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          fetch_depth: 0 # Fetch full git history -> needed for check_changes step
+          fetch-depth: 0 # Fetch full git history -> needed for check_changes step
 
       - name: Check changes to environment folder or root folder
         id: check_changes
