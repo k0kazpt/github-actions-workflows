@@ -3,51 +3,116 @@ name: Deploy action for GCP project
 on:
   pull_request:
     branches:
-      - main
       - master
     paths-ignore:
       - '.github/**'
+      - '.chglog/'
       - 'LICENSE'
       - '**.md'
 
   push:
     branches:
-      - main
       - master
     paths-ignore:
       - '.github/**'
+      - '.chglog/'
       - 'LICENSE'
       - '**.md'
 
 jobs:
-  deploy_infra:
-    name: Deploy
+  envs_to_run:
+    name: Calculate which environments need to run # must match environment folder names in repo!
     runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 1
-      matrix:
-        environment: ["develop", "qa", "prod"] # must match environment folder names in repo!
-    environment: ${{ matrix.environment }}
+    outputs:
+      matrix: ${{ steps.gen_env_matrix.outputs.matrix }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
           fetch-depth: 0 # Fetch full git history -> needed for check_changes step
 
-      - name: Check changes to environment folder or root folder
-        id: check_changes
+      - name: Generate Environment Matrix
+        id: gen_env_matrix
+        env:
+          ENVS: "develop qa prod"
         run: |
+          declare -a ENVS_TO_RUN=()
           if [ ${{ github.event_name }} = "pull_request" ]
           then
-            echo "::set-output name=changes::$(git --no-pager diff --name-only origin/main -- | cut -d'/' -f1 | grep -E '.hcl|${{ matrix.environment }}' | uniq | wc -l)"
+            for env in ${{ env.ENVS }}
+            do
+              changes_to_env=$(git --no-pager diff --name-only origin/${{ github.base_ref }} -- | cut -d'/' -f1 | grep -E ".hcl|$env" | uniq | wc -l)
+              if [ $changes_to_env > 0 ]
+              then
+                ENVS_TO_RUN+=($env)
+              fi
+            done
+            ENVS_JSON=$(printf '%s\n' "${ENVS_TO_RUN[@]}" | jq -R | jq -sc | sed 's/"/\\"/g')
           elif [ ${{ github.event_name }} = "push" ]
           then
-            echo "::set-output name=changes::$(git --no-pager log -m -1 --name-only --oneline | tail -n +2 | cut -d'/' -f1 | grep -E '.hcl|${{ matrix.environment }}' | uniq | wc -l)"
+            for env in ${{ env.ENVS }}
+            do
+              changes_to_env=$(git --no-pager log -m -1 --name-only --oneline | tail -n +2 | cut -d'/' -f1 | grep -E '.hcl|$env' | uniq | wc -l)
+              if [ $changes_to_env > 0 ]
+              then
+                ENVS_TO_RUN+=($env)
+              fi
+            done
+            ENVS_JSON=$(printf '%s\n' "${ENVS_TO_RUN[@]}" | jq -R | jq -sc | sed 's/"/\\"/g')
           fi
+          echo "::set-output name=matrix::{\"environment\": $ENVS_JSON}"
+
+  plan_infra:
+    name: Plan
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    needs: envs_to_run
+    strategy:
+      max-parallel: 1
+#      matrix: ${{fromJson(needs.envs_to_run.outputs.matrix)}}
+      matrix:
+        environment: ["develop", "qa", "prod"] # must match environment folder names in repo!
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
 
       - name: test
-        if: steps.check_changes.outputs.changes > 0
         run: |
+          echo "Job: Plan"
+          echo "Matrix: ${{ needs.envs_to_run.outputs.matrix }}"
+          echo "Run ${{ github.event_name }} ${{ matrix.environment }}"
+
+
+  deploy_infra:
+    name: Deploy
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    needs: envs_to_run
+    strategy:
+      max-parallel: 1
+#      matrix: ${{fromJson(needs.envs_to_run.outputs.matrix)}}
+      matrix:
+        environment: ["develop", "qa", "prod"] # must match environment folder names in repo!
+    environment: ${{ matrix.environment }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+#      - name: Check changes to environment folder or root folder
+#        id: check_changes
+#        run: |
+#          if [ ${{ github.event_name }} = "pull_request" ]
+#          then
+#            echo "::set-output name=changes::$(git --no-pager diff --name-only origin/master -- | cut -d'/' -f1 | grep -E '.hcl|${{ matrix.environment }}' | uniq | wc -l)"
+#          elif [ ${{ github.event_name }} = "push" ]
+#          then
+#            echo "::set-output name=changes::$(git --no-pager log -m -1 --name-only --oneline | tail -n +2 | cut -d'/' -f1 | grep -E '.hcl|${{ matrix.environment }}' | uniq | wc -l)"
+#          fi
+#
+      - name: test
+        run: |
+          echo "Job: Deploy"
+          echo "Matrix: ${{ needs.envs_to_run.outputs.matrix }}"
           echo "Run ${{ github.event_name }} ${{ matrix.environment }}"
 
   after_deploy:
