@@ -3,7 +3,6 @@ name: Deploy action for GCP project
 on:
   pull_request:
     branches:
-      - main
       - master
     paths-ignore:
       - '.github/**'
@@ -13,7 +12,6 @@ on:
 
   push:
     branches:
-      - main
       - master
     paths-ignore:
       - '.github/**'
@@ -41,7 +39,7 @@ jobs:
         run: |
           if [ ${{ github.event_name }} = "pull_request" ]
           then
-            echo "::set-output name=changes::$(git --no-pager diff --name-only origin/main -- | cut -d'/' -f1 | grep -E '.hcl|${{ matrix.environment }}' | uniq | wc -l)"
+            echo "::set-output name=changes::$(git --no-pager diff --name-only origin/master -- | cut -d'/' -f1 | grep -E '.hcl|${{ matrix.environment }}' | uniq | wc -l)"
           elif [ ${{ github.event_name }} = "push" ]
           then
             echo "::set-output name=changes::$(git --no-pager log -m -1 --name-only --oneline | tail -n +2 | cut -d'/' -f1 | grep -E '.hcl|${{ matrix.environment }}' | uniq | wc -l)"
