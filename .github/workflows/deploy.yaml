@@ -88,7 +88,6 @@ jobs:
 #          fi
 #
       - name: test
-        if: steps.check_changes.outputs.changes > 0
         run: |
           echo "Matrix: ${{ needs.envs_to_run.outputs.matrix }}"
           echo "Run ${{ github.event_name }} ${{ matrix.environment }}"
