@@ -60,7 +60,7 @@ jobs:
             done
             ENVS_JSON=$(printf '%s\n' "${ENVS_TO_RUN[@]}" | jq -R | jq -sc | sed 's/"/\\"/g')
           fi
-          echo "::set-output name=matrix::{$ENVS_JSON}"
+          echo "::set-output name=matrix::{\"environment\": $ENVS_JSON}"
 
   deploy_infra:
     name: Deploy
@@ -68,8 +68,9 @@ jobs:
     needs: envs_to_run
     strategy:
       max-parallel: 1
-      matrix: ${{fromJson(needs.envs_to_run.outputs.matrix)}}
-#        environment: ["develop", "qa", "prod"] # must match environment folder names in repo!
+#      matrix: ${{fromJson(needs.envs_to_run.outputs.matrix)}}
+      matrix:
+        environment: ["develop", "qa", "prod"] # must match environment folder names in repo!
     environment: ${{ matrix.environment }}
     steps:
       - name: Checkout
@@ -89,6 +90,7 @@ jobs:
       - name: test
         if: steps.check_changes.outputs.changes > 0
         run: |
+          echo "Matrix: ${{ needs.envs_to_run.outputs.matrix }}"
           echo "Run ${{ github.event_name }} ${{ matrix.environment }}"
 
   after_deploy:
