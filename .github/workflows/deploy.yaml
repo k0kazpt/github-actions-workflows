@@ -62,9 +62,31 @@ jobs:
           fi
           echo "::set-output name=matrix::{\"environment\": $ENVS_JSON}"
 
+  plan_infra:
+    name: Plan
+    runs-on: ubuntu-latest
+    if: github.event_name == "pull_request"
+    needs: envs_to_run
+    strategy:
+      max-parallel: 1
+#      matrix: ${{fromJson(needs.envs_to_run.outputs.matrix)}}
+      matrix:
+        environment: ["develop", "qa", "prod"] # must match environment folder names in repo!
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: test
+        run: |
+          echo "Job: Plan"
+          echo "Matrix: ${{ needs.envs_to_run.outputs.matrix }}"
+          echo "Run ${{ github.event_name }} ${{ matrix.environment }}"
+
+
   deploy_infra:
     name: Deploy
     runs-on: ubuntu-latest
+    if: github.event_name == "push"
     needs: envs_to_run
     strategy:
       max-parallel: 1
@@ -89,6 +111,7 @@ jobs:
 #
       - name: test
         run: |
+          echo "Job: Deploy"
           echo "Matrix: ${{ needs.envs_to_run.outputs.matrix }}"
           echo "Run ${{ github.event_name }} ${{ matrix.environment }}"
 
