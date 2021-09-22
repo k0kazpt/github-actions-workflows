@@ -47,7 +47,6 @@ jobs:
                 ENVS_TO_RUN+=($env)
               fi
             done
-            ENVS_JSON=$(printf '%s\n' "${ENVS_TO_RUN[@]}" | jq -R | jq -sc | sed 's/"/\\"/g')
           elif [ ${{ github.event_name }} = "push" ]
           then
             for env in ${{ env.ENVS }}
@@ -58,9 +57,9 @@ jobs:
                 ENVS_TO_RUN+=($env)
               fi
             done
-            ENVS_JSON=$(printf '%s\n' "${ENVS_TO_RUN[@]}" | jq -R | jq -sc | sed 's/"/\\"/g')
           fi
-          echo "::set-output name=matrix::{\"environment\": $ENVS_JSON}"
+          ENVS_JSON=$(printf '%s\n' "${ENVS_TO_RUN[@]}" | jq -R | jq -sc 'map({environment: .})')
+          echo "::set-output name=matrix::{\"include\":${ENVS_JSON}}"
 
   plan_infra:
     name: Plan
@@ -69,9 +68,9 @@ jobs:
     needs: envs_to_run
     strategy:
       max-parallel: 1
-#      matrix: ${{fromJson(needs.envs_to_run.outputs.matrix)}}
-      matrix:
-        environment: ["develop", "qa", "prod"] # must match environment folder names in repo!
+      matrix: ${{fromJson(needs.envs_to_run.outputs.matrix)}}
+#      matrix:
+#        environment: ["develop", "qa", "prod"] # must match environment folder names in repo!
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -82,6 +81,11 @@ jobs:
           echo "Matrix: ${{ needs.envs_to_run.outputs.matrix }}"
           echo "Run ${{ github.event_name }} ${{ matrix.environment }}"
 
+      - name: test_secret
+        run: |
+          echo "test_secret_${{ matrix.environment }}:"
+          echo ${{secrets[format('GCP_SA_KEY_{0}', matrix.environment)]}} | sed 's/./& /g'
+
 
   deploy_infra:
     name: Deploy
@@ -90,9 +94,9 @@ jobs:
     needs: envs_to_run
     strategy:
       max-parallel: 1
-#      matrix: ${{fromJson(needs.envs_to_run.outputs.matrix)}}
-      matrix:
-        environment: ["develop", "qa", "prod"] # must match environment folder names in repo!
+      matrix: ${{fromJson(needs.envs_to_run.outputs.matrix)}}
+#      matrix:
+#        environment: ["develop", "qa", "prod"] # must match environment folder names in repo!
     environment: ${{ matrix.environment }}
     steps:
       - name: Checkout
