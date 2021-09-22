@@ -2,6 +2,14 @@
 ## [Unreleased]
 
 
+<a name="0.5.1"></a>
+## [0.5.1] - 2021-09-22
+### Improvements
+- **test_deploy_pipeline:**  added git sha for merge check
+- **test_deploy_pipeline:**  remove test echos
+- **test_deploy_pipeline:**  change dev file
+
+
 <a name="0.5.0"></a>
 ## [0.5.0] - 2021-09-22
 ### Improvements
@@ -75,7 +83,8 @@
 - **test_deploy_pipeline:**  add teste 1
 
 
-[Unreleased]: https://github.com/nosportugal/mpro-terragrunt-gcp-live/compare/0.5.0...HEAD
+[Unreleased]: https://github.com/nosportugal/mpro-terragrunt-gcp-live/compare/0.5.1...HEAD
+[0.5.1]: https://github.com/nosportugal/mpro-terragrunt-gcp-live/compare/0.5.0...0.5.1
 [0.5.0]: https://github.com/nosportugal/mpro-terragrunt-gcp-live/compare/0.4.1...0.5.0
 [0.4.1]: https://github.com/nosportugal/mpro-terragrunt-gcp-live/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/nosportugal/mpro-terragrunt-gcp-live/compare/0.3.0...0.4.0
