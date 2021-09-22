@@ -49,7 +49,7 @@ jobs:
           then
             for env in ${{ env.ENVS }}
             do
-              changes_to_env=$(git --no-pager log -m -1 --name-only --oneline ${{ github.sha }} | tail -n +2 | cut -d'/' -f1 | grep -E '.hcl|.github|$env' | uniq | wc -l)
+              changes_to_env=$(git --no-pager log -m -1 --name-only --oneline ${{ github.sha }} | tail -n +2 | cut -d'/' -f1 | grep -E ".hcl|.github|$env" | uniq | wc -l)
               if [ $changes_to_env -ne 0 ]
               then
                 ENVS_TO_RUN+=($env)
