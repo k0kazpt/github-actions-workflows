@@ -58,7 +58,7 @@ jobs:
               fi
             done
           fi
-          ENVS_JSON=$(printf '%s\n' "${ENVS_TO_RUN[@]}" | jq -R | jq -sc 'map({environment: .})' | sed 's/"/\\"/g')
+          ENVS_JSON=$(printf '%s\n' "${ENVS_TO_RUN[@]}" | jq -R | jq -sc 'map({environment: .})')
           echo "ENVS_JSON: $ENVS_JSON"
           echo "::set-output name=matrix::{\"include\":${ENVS_JSON}}"
           #echo "::set-output name=matrix::{\"include\":[{\"environment\":\"develop\"},{\"environment\":\"qa\"},{\"environment\":\"prod\"}]}"
