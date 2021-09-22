@@ -2,6 +2,13 @@
 ## [Unreleased]
 
 
+<a name="0.5.0"></a>
+## [0.5.0] - 2021-09-22
+### Improvements
+- **test_deploy_pipeline:**  add hcl root file
+- **test_deploy_pipeline:**  add README
+
+
 <a name="0.4.1"></a>
 ## [0.4.1] - 2021-09-22
 ### Improvements
@@ -68,7 +75,8 @@
 - **test_deploy_pipeline:**  add teste 1
 
 
-[Unreleased]: https://github.com/nosportugal/mpro-terragrunt-gcp-live/compare/0.4.1...HEAD
+[Unreleased]: https://github.com/nosportugal/mpro-terragrunt-gcp-live/compare/0.5.0...HEAD
+[0.5.0]: https://github.com/nosportugal/mpro-terragrunt-gcp-live/compare/0.4.1...0.5.0
 [0.4.1]: https://github.com/nosportugal/mpro-terragrunt-gcp-live/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/nosportugal/mpro-terragrunt-gcp-live/compare/0.3.0...0.4.0
 [0.3.0]: https://github.com/nosportugal/mpro-terragrunt-gcp-live/compare/0.2.0...0.3.0
