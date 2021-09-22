@@ -69,7 +69,7 @@ jobs:
     needs: envs_to_run
     strategy:
       max-parallel: 1
-      matrix: ${{fromJson(needs.envs_to_run.outputs.matrix)}}
+      matrix: ${{fromJson({"environment": ["develop", "qa", "prod"]})}}
 #      matrix:
 #        environment: ["develop", "qa", "prod"] # must match environment folder names in repo!
     steps:
