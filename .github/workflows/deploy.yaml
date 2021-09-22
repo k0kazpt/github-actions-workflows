@@ -82,6 +82,10 @@ jobs:
           echo "Matrix: ${{ needs.envs_to_run.outputs.matrix }}"
           echo "Run ${{ github.event_name }} ${{ matrix.environment }}"
 
+      - name: test_secret
+        run: |
+          echo "test_secret_${{ matrix.environment }}: ${{ secrets[format('GCP_SA_KEY_{0}', matrix.environment)] }}"
+
 
   deploy_infra:
     name: Deploy
