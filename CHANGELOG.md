@@ -2,6 +2,25 @@
 ## [Unreleased]
 
 
+<a name="0.4.0"></a>
+## [0.4.0] - 2021-09-22
+### Improvements
+- **test_deploy_pipeline:**  test dynamic matrix
+- **test_deploy_pipeline:**  test dynamic matrix
+- **test_deploy_pipeline:**  test dynamic matrix
+- **test_deploy_pipeline:**  test dynamic matrix
+- **test_deploy_pipeline:**  test dynamic matrix
+- **test_deploy_pipeline:**  test dynamic matrix
+- **test_deploy_pipeline:**  test dynamic matrix
+- **test_deploy_pipeline:**  test dynamic matrix
+- **test_deploy_pipeline:**  test dynamic matrix
+- **test_deploy_pipeline:**  test dynamic matrix
+- **test_deploy_pipeline:**  test dynamic matrix
+- **test_deploy_pipeline:**  dynamic secret name test pr
+- **test_deploy_pipeline:**  dynamic secret name test pr
+- **test_deploy_pipeline:**  add dynamic secret name test
+
+
 <a name="0.3.0"></a>
 ## [0.3.0] - 2021-09-21
 ### Improvements
@@ -29,5 +48,6 @@
 - **test_deploy_pipeline:**  add teste 1
 
 
-[Unreleased]: https://github.com/nosportugal/mpro-terragrunt-gcp-live/compare/0.3.0...HEAD
+[Unreleased]: https://github.com/nosportugal/mpro-terragrunt-gcp-live/compare/0.4.0...HEAD
+[0.4.0]: https://github.com/nosportugal/mpro-terragrunt-gcp-live/compare/0.3.0...0.4.0
 [0.3.0]: https://github.com/nosportugal/mpro-terragrunt-gcp-live/compare/0.2.0...0.3.0
