@@ -71,7 +71,7 @@ jobs:
   plan_infra:
     name: Plan
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && needs.envs_to_run.outputs.empty_matrix == false
+    if: github.event_name == 'pull_request' && needs.envs_to_run.outputs.empty_matrix == 'false'
     needs: envs_to_run
     strategy:
       max-parallel: 1
@@ -95,7 +95,7 @@ jobs:
   deploy_infra:
     name: Deploy
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && needs.envs_to_run.outputs.empty_matrix == false
+    if: github.event_name == 'push' && needs.envs_to_run.outputs.empty_matrix == 'false'
     needs: envs_to_run
     strategy:
       max-parallel: 1
