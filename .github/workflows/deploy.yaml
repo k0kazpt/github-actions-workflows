@@ -39,9 +39,7 @@ jobs:
           then
             for env in ${{ env.ENVS }}
             do
-              echo "env: $env"
               changes_to_env=$(git --no-pager diff --name-only origin/${{ github.base_ref }} -- | cut -d'/' -f1 | grep -E ".hcl|.github|$env" | uniq | wc -l)
-              echo "changes_to_env: $changes_to_env"
               if [ $changes_to_env -ne 0 ]
               then
                 ENVS_TO_RUN+=($env)
