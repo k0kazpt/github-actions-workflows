@@ -61,7 +61,8 @@ jobs:
             ENVS_JSON=$(printf '%s\n' "${ENVS_TO_RUN[@]}" | jq -R | jq -sc)
           fi
           echo "::set-output name=matrix2::{environment: $ENVS_JSON}"
-          echo "::set-output name=matrix::{\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}"
+          echo "::set-output name=matrix3::{\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}"
+          echo "::set-output name=matrix::{\"include\":[{\"environment\":\"develop\"}]}"
 
   plan_infra:
     name: Plan
