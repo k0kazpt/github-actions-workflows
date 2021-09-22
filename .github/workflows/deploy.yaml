@@ -61,10 +61,12 @@ jobs:
           if [ ${#ENVS_TO_RUN[@]} -eq 0 ]
           then
             echo "::set-output name=empty_matrix::true"
+            echo "::set-output name=matrix::{\"include\":[]}"
           else
             echo "::set-output name=empty_matrix::false"
+            echo "::set-output name=matrix::{\"include\":${ENVS_JSON}}"
           fi
-          echo "::set-output name=matrix::{\"include\":${ENVS_JSON}}"
+
 
   plan_infra:
     name: Plan
