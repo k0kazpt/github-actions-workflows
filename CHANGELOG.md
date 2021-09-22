@@ -2,6 +2,26 @@
 ## [Unreleased]
 
 
+<a name="0.4.1"></a>
+## [0.4.1] - 2021-09-22
+### Improvements
+- **test_deploy_pipeline:**  add workflow files to env changes
+- **test_deploy_pipeline:**  add workflow files to env changes
+- **test_deploy_pipeline:**  add workflow files to env changes
+- **test_deploy_pipeline:**  add workflow files to env changes
+- **test_deploy_pipeline:**  add workflow files to env changes
+- **test_deploy_pipeline:**  add workflow files to env changes
+- **test_deploy_pipeline:**  add workflow files to env changes
+- **test_deploy_pipeline:**  add additional check for empty matrix
+- **test_deploy_pipeline:**  add additional check for empty matrix
+- **test_deploy_pipeline:**  add additional check for empty matrix
+- **test_deploy_pipeline:**  fix matrix generation when no envs are changed
+- **test_deploy_pipeline:**  change if comparison to integer
+- **test_deploy_pipeline:**  check changes step
+- **test_deploy_pipeline:**  remove ignore .github
+- **test_deploy_pipeline:**  remove file
+
+
 <a name="0.4.0"></a>
 ## [0.4.0] - 2021-09-22
 ### Improvements
@@ -48,6 +68,7 @@
 - **test_deploy_pipeline:**  add teste 1
 
 
-[Unreleased]: https://github.com/nosportugal/mpro-terragrunt-gcp-live/compare/0.4.0...HEAD
+[Unreleased]: https://github.com/nosportugal/mpro-terragrunt-gcp-live/compare/0.4.1...HEAD
+[0.4.1]: https://github.com/nosportugal/mpro-terragrunt-gcp-live/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/nosportugal/mpro-terragrunt-gcp-live/compare/0.3.0...0.4.0
 [0.3.0]: https://github.com/nosportugal/mpro-terragrunt-gcp-live/compare/0.2.0...0.3.0
