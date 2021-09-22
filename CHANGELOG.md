@@ -2,6 +2,12 @@
 ## [Unreleased]
 
 
+<a name="0.6.0"></a>
+## [0.6.0] - 2021-09-22
+### Improvements
+- **test_deploy_pipeline:**  change qa and prod
+
+
 <a name="0.5.3"></a>
 ## [0.5.3] - 2021-09-22
 ### Improvements
@@ -96,7 +102,8 @@
 - **test_deploy_pipeline:**  add teste 1
 
 
-[Unreleased]: https://github.com/nosportugal/mpro-terragrunt-gcp-live/compare/0.5.3...HEAD
+[Unreleased]: https://github.com/nosportugal/mpro-terragrunt-gcp-live/compare/0.6.0...HEAD
+[0.6.0]: https://github.com/nosportugal/mpro-terragrunt-gcp-live/compare/0.5.3...0.6.0
 [0.5.3]: https://github.com/nosportugal/mpro-terragrunt-gcp-live/compare/0.5.2...0.5.3
 [0.5.2]: https://github.com/nosportugal/mpro-terragrunt-gcp-live/compare/0.5.1...0.5.2
 [0.5.1]: https://github.com/nosportugal/mpro-terragrunt-gcp-live/compare/0.5.0...0.5.1
