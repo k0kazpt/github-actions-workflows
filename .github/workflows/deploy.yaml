@@ -58,7 +58,12 @@ jobs:
               fi
             done
           fi
-          ENVS_JSON=$(printf '%s\n' "${ENVS_TO_RUN[@]}" | jq -R | jq -sc 'map({environment: .})')
+          if [ ${#ENVS_TO_RUN[@]} -gt 0 ]
+          then
+            ENVS_JSON=$(printf '%s\n' "${ENVS_TO_RUN[@]}" | jq -R | jq -sc 'map({environment: .})')
+          else
+            ENVS_JSON=[]
+          fi
           echo "::set-output name=matrix::{\"include\":${ENVS_JSON}}"
 
   plan_infra:
