@@ -42,7 +42,7 @@ jobs:
               echo "env: $env"
               changes_to_env=$(git --no-pager diff --name-only origin/${{ github.base_ref }} -- | cut -d'/' -f1 | grep -E ".hcl|.github|$env" | uniq | wc -l)
               echo "changes_to_env: $changes_to_env"
-              if [ $changes_to_env -gt 0 ]
+              if [ $changes_to_env -gt "0" ]
               then
                 ENVS_TO_RUN+=($env)
               fi
@@ -52,13 +52,13 @@ jobs:
             for env in ${{ env.ENVS }}
             do
               changes_to_env=$(git --no-pager log -m -1 --name-only --oneline | tail -n +2 | cut -d'/' -f1 | grep -E '.hcl|.github|$env' | uniq | wc -l)
-              if [ $changes_to_env -gt 0 ]
+              if [ $changes_to_env -gt "0" ]
               then
                 ENVS_TO_RUN+=($env)
               fi
             done
           fi
-          if [ ${#ENVS_TO_RUN[@]} -eq 0 ]
+          if [ ${#ENVS_TO_RUN[@]} -eq "0" ]
           then
             echo "::set-output name=empty_matrix::true"
             echo "::set-output name=matrix::{\"include\":[]}"
