@@ -5,7 +5,6 @@ on:
     branches:
       - master
     paths-ignore:
-      - '.github/**'
       - '.chglog/'
       - 'LICENSE'
       - '**.md'
@@ -14,7 +13,6 @@ on:
     branches:
       - master
     paths-ignore:
-      - '.github/**'
       - '.chglog/'
       - 'LICENSE'
       - '**.md'
@@ -41,8 +39,10 @@ jobs:
           then
             for env in ${{ env.ENVS }}
             do
+              echo "env: $env"
               changes_to_env=$(git --no-pager diff --name-only origin/${{ github.base_ref }} -- | cut -d'/' -f1 | grep -E ".hcl|$env" | uniq | wc -l)
-              if [ $changes_to_env > 0 ]
+              echo "changes_to_env: $changes_to_env"
+              if [ $changes_to_env -gt 0 ]
               then
                 ENVS_TO_RUN+=($env)
               fi
@@ -52,25 +52,30 @@ jobs:
             for env in ${{ env.ENVS }}
             do
               changes_to_env=$(git --no-pager log -m -1 --name-only --oneline | tail -n +2 | cut -d'/' -f1 | grep -E '.hcl|$env' | uniq | wc -l)
-              if [ $changes_to_env > 0 ]
+              if [ $changes_to_env -gt 0 ]
               then
                 ENVS_TO_RUN+=($env)
               fi
             done
           fi
-          ENVS_JSON=$(printf '%s\n' "${ENVS_TO_RUN[@]}" | jq -R | jq -sc 'map({environment: .})')
-          echo "::set-output name=matrix::{\"include\":${ENVS_JSON}}"
+          if [ ${#ENVS_TO_RUN[@]} -eq 0 ]
+          then
+            echo "::set-output name=empty_matrix::true"
+            echo "::set-output name=matrix::{\"include\":[]}"
+          else
+            echo "::set-output name=empty_matrix::false"
+            echo "::set-output name=matrix::{\"include\":${ENVS_JSON}}"
+          fi
+
 
   plan_infra:
     name: Plan
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && needs.envs_to_run.outputs.empty_matrix == 'false'
     needs: envs_to_run
     strategy:
       max-parallel: 1
       matrix: ${{fromJson(needs.envs_to_run.outputs.matrix)}}
-#      matrix:
-#        environment: ["develop", "qa", "prod"] # must match environment folder names in repo!
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -90,29 +95,16 @@ jobs:
   deploy_infra:
     name: Deploy
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && needs.envs_to_run.outputs.empty_matrix == 'false'
     needs: envs_to_run
     strategy:
       max-parallel: 1
       matrix: ${{fromJson(needs.envs_to_run.outputs.matrix)}}
-#      matrix:
-#        environment: ["develop", "qa", "prod"] # must match environment folder names in repo!
     environment: ${{ matrix.environment }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-#      - name: Check changes to environment folder or root folder
-#        id: check_changes
-#        run: |
-#          if [ ${{ github.event_name }} = "pull_request" ]
-#          then
-#            echo "::set-output name=changes::$(git --no-pager diff --name-only origin/master -- | cut -d'/' -f1 | grep -E '.hcl|${{ matrix.environment }}' | uniq | wc -l)"
-#          elif [ ${{ github.event_name }} = "push" ]
-#          then
-#            echo "::set-output name=changes::$(git --no-pager log -m -1 --name-only --oneline | tail -n +2 | cut -d'/' -f1 | grep -E '.hcl|${{ matrix.environment }}' | uniq | wc -l)"
-#          fi
-#
       - name: test
         run: |
           echo "Job: Deploy"
