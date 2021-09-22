@@ -47,7 +47,6 @@ jobs:
                 ENVS_TO_RUN+=($env)
               fi
             done
-            ENVS_JSON=$(printf '%s\n' "${ENVS_TO_RUN[@]}" | jq -R | jq -sc | sed 's/"/\\"/g')
           elif [ ${{ github.event_name }} = "push" ]
           then
             for env in ${{ env.ENVS }}
@@ -58,11 +57,9 @@ jobs:
                 ENVS_TO_RUN+=($env)
               fi
             done
-            ENVS_JSON=$(printf '%s\n' "${ENVS_TO_RUN[@]}" | jq -R | jq -sc)
           fi
-          echo "::set-output name=matrix2::{environment: $ENVS_JSON}"
-          echo "::set-output name=matrix3::{\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}"
-          echo "::set-output name=matrix::{\"include\":[{\"environment\":\"develop\"},{\"environment\":\"qa\"}]}"
+          ENVS_JSON=$(printf '%s\n' "${ENVS_TO_RUN[@]}" | jq -R | jq -sc 'map({environment: .})' | sed 's/"/\\"/g')
+          echo "::set-output name=matrix::{\"include\":$ENVS_JSON}"
 
   plan_infra:
     name: Plan
