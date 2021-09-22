@@ -60,7 +60,8 @@ jobs:
             done
             ENVS_JSON=$(printf '%s\n' "${ENVS_TO_RUN[@]}" | jq -R | jq -sc)
           fi
-          echo "::set-output name=matrix::{environment: $ENVS_JSON}"
+          echo "::set-output name=matrix2::{environment: $ENVS_JSON}"
+          echo "::set-output name=matrix::{\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}"
 
   plan_infra:
     name: Plan
@@ -69,7 +70,7 @@ jobs:
     needs: envs_to_run
     strategy:
       max-parallel: 1
-      matrix: ${{fromJson({"environment": ["develop", "qa", "prod"]})}}
+      matrix: ${{fromJson(needs.envs_to_run.outputs.matrix)}}
 #      matrix:
 #        environment: ["develop", "qa", "prod"] # must match environment folder names in repo!
     steps:
