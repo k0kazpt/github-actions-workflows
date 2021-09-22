@@ -60,7 +60,7 @@ jobs:
             done
             ENVS_JSON=$(printf '%s\n' "${ENVS_TO_RUN[@]}" | jq -R | jq -sc | sed 's/"/\\"/g')
           fi
-          echo "::set-output name=matrix::{\"environment\": $ENVS_JSON}"
+          echo "::set-output name=matrix::{environment: $ENVS_JSON}"
 
   plan_infra:
     name: Plan
