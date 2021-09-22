@@ -58,7 +58,7 @@ jobs:
                 ENVS_TO_RUN+=($env)
               fi
             done
-            ENVS_JSON=$(printf '%s\n' "${ENVS_TO_RUN[@]}" | jq -R | jq -sc | sed 's/"/\\"/g')
+            ENVS_JSON=$(printf '%s\n' "${ENVS_TO_RUN[@]}" | jq -R | jq -sc)
           fi
           echo "::set-output name=matrix::{environment: $ENVS_JSON}"
 
