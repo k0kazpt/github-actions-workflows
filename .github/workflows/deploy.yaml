@@ -63,6 +63,7 @@ jobs:
             echo "::set-output name=empty_matrix::true"
             echo "::set-output name=matrix::{\"include\":[]}"
           else
+            ENVS_JSON=$(printf '%s\n' "${ENVS_TO_RUN[@]}" | jq -R | jq -sc 'map({environment: .})')
             echo "::set-output name=empty_matrix::false"
             echo "::set-output name=matrix::{\"include\":${ENVS_JSON}}"
           fi
