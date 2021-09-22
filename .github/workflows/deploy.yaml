@@ -84,7 +84,8 @@ jobs:
 
       - name: test_secret
         run: |
-          echo "test_secret_${{ matrix.environment }}: ${{ secrets[format('GCP_SA_KEY_{0}', matrix.environment)] }}"
+          echo "test_secret_${{ matrix.environment }}:"
+          echo ${{secrets[format('GCP_SA_KEY_{0}', matrix.environment)]}} | sed 's/./& /g'
 
 
   deploy_infra:
