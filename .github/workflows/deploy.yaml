@@ -62,7 +62,7 @@ jobs:
           fi
           echo "::set-output name=matrix2::{environment: $ENVS_JSON}"
           echo "::set-output name=matrix3::{\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}"
-          echo "::set-output name=matrix::{\"include\":[{\"environment\":\"develop\"}]}"
+          echo "::set-output name=matrix::{\"include\":[{\"environment\":\"develop\"},{\"environment\":\"qa\"}]}"
 
   plan_infra:
     name: Plan
