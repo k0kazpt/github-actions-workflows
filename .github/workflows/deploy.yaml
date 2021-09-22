@@ -69,9 +69,9 @@ jobs:
     needs: envs_to_run
     strategy:
       max-parallel: 1
-#      matrix: ${{fromJson(needs.envs_to_run.outputs.matrix)}}
-      matrix:
-        environment: ["develop", "qa", "prod"] # must match environment folder names in repo!
+      matrix: ${{fromJson(needs.envs_to_run.outputs.matrix)}}
+#      matrix:
+#        environment: ["develop", "qa", "prod"] # must match environment folder names in repo!
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -95,9 +95,9 @@ jobs:
     needs: envs_to_run
     strategy:
       max-parallel: 1
-#      matrix: ${{fromJson(needs.envs_to_run.outputs.matrix)}}
-      matrix:
-        environment: ["develop", "qa", "prod"] # must match environment folder names in repo!
+      matrix: ${{fromJson(needs.envs_to_run.outputs.matrix)}}
+#      matrix:
+#        environment: ["develop", "qa", "prod"] # must match environment folder names in repo!
     environment: ${{ matrix.environment }}
     steps:
       - name: Checkout
